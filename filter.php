@@ -39,19 +39,41 @@
 	class Filter1 extends Filter {
 		protected function filterFunc($val, $key) {
 			$propValue = $val->{$this->propName};
-			return $propValue[0] == 'c' && strlen($propValue) > 4;
+			return $propValue == 'item_name1';
+		}
+	}
+	
+	class Filter2 extends Filter {
+		protected function filterFunc($val, $key) {
+			$propValue = $val->{$this->propName};
+			return $propValue > 100;
+		}
+	}
+	
+	class Filter3 extends Filter {
+		protected function filterFunc($val, $key) {
+			$propValue = $val->{$this->propName};
+			return $propValue < 10;
 		}
 	}
 	
 	$items = new Items([
-		new Item('phones', 200, 25), 
-        new Item('cameras', 300, 10), 
-        new Item('cats', 550, 130), 
-        new Item('rabbits', 700, 70), 
-        new Item('cups', 30, 1500)
+		new Item('item_name1', 100, 25), 
+        new Item('item_name1', 300, 20), 
+        new Item('item_name1', 115, 7), 
+        new Item('item_name2', 290, 3), 
+        new Item('item_name3', 30, 1500)
 	]);
 	
 	$filter1 = new Filter1();
+	$filter2 = new Filter2();
+	$filter3 = new Filter3();
 	
 	$filteredItems = $filter1->applyFilter($items->getItems(), 'name');
-	var_dump($filteredItems);
+	$filteredItems1 = $filter2->applyFilter($filteredItems, 'price');
+	$filteredItems2 = $filter3->applyFilter($filteredItems, 'quantity');
+	$filteredItems = array_merge($filteredItems1, $filteredItems2);
+	
+	$items = new Items($filteredItems);
+	
+	var_dump($items->getItems());
